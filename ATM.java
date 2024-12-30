@@ -58,7 +58,7 @@ public class ATM {
     }
 
 
-    public static boolean withdrawFromATM(int amount, Notes2000 notes2000, Notes500 notes500, Notes200 notes200, Notes100 notes100) {
+    public static boolean withdrawFromATM(int amount,Notes2000 notes2000, Notes500 notes500, Notes200 notes200, Notes100 notes100) {
 
         int totalAvailableAmount = notes2000.getNote() * notes2000.getCount() +
                 notes500.getNote() * notes500.getCount() +
@@ -96,9 +96,6 @@ public class ATM {
         }
         return false;
     }
-
-
-
     public static double depositAmountToATM(Notes2000 notes2000, Notes500 notes500, Notes200 notes200, Notes100 notes100) {
         return notes2000.getNote() * notes2000.getCount() +
                 notes500.getNote() * notes500.getCount() +
@@ -106,5 +103,6 @@ public class ATM {
                 notes100.getNote() * notes100.getCount();
     }
 }
+
 
 
