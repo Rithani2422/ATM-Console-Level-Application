@@ -11,7 +11,6 @@ public class User {
         this.password = password;
         this.balance = balance;
         this.transactionHistory = new ArrayList<>();
-        this.transactionHistory.add(new Transaction(username, "Initial Amount", balance));
     }
     public String getUsername() {
         return username;
