@@ -1,7 +1,10 @@
 public class Notes {
     private int Note;
     private int Count;
-
+    public Notes(int Note, int Count) {
+        this.setNote(Note);
+        this.setCount(Count);
+    }
     public int getNote() {
         return Note;
     }
