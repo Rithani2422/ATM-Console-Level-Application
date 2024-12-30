@@ -35,7 +35,7 @@ public class AdminActions {
             System.out.println("2. Delete User Account");
             System.out.println("3. View All Transaction Histories");
             System.out.println("4. Deposit to ATM");
-            System.out.println("5.View Admin Transactions");
+            System.out.println("5. View Admin Transactions");
             System.out.println("6. Logout");
             System.out.print("Choose an option: ");
             int choice = Integer.parseInt(scanner.nextLine());
@@ -79,9 +79,6 @@ public class AdminActions {
 
 
     }
-
-
-
     private static void deleteUserAccount(Scanner scanner) {
         System.out.print("Enter Username to delete: ");
         String username = scanner.nextLine();
@@ -113,6 +110,9 @@ public class AdminActions {
     }
 
     private static void depositToATM(Scanner scanner, Admin admin) {
+        System.out.print("Enter the total deposit amount: Rs. ");
+        double totalDepositAmount = Double.parseDouble(scanner.nextLine());
+
         System.out.println("Enter the number of notes for each denomination:");
         System.out.print("2000: ");
         int notes2000Count = Integer.parseInt(scanner.nextLine());
@@ -122,18 +122,26 @@ public class AdminActions {
         int notes200Count = Integer.parseInt(scanner.nextLine());
         System.out.print("100: ");
         int notes100Count = Integer.parseInt(scanner.nextLine());
-        ATM.notes2000 += notes2000Count;
-        ATM.notes500 += notes500Count;
-        ATM.notes200 += notes200Count;
-        ATM.notes100 += notes100Count;
-        double totalDepositAmount = (notes2000Count * 2000) + (notes500Count * 500) +
+
+        double calculatedTotal = (notes2000Count * 2000) + (notes500Count * 500) +
                 (notes200Count * 200) + (notes100Count * 100);
 
-        System.out.println("Successfully deposited Rs." + totalDepositAmount);
-        System.out.println("New ATM Balance: Rs." + ATM.getTotalATMBalance());
-        Transaction adminTransaction = new Transaction(admin.getId(), "ATM Deposit", totalDepositAmount);
-        admin.addTransaction(adminTransaction);
+        if (calculatedTotal == totalDepositAmount) {
+            ATM.notes2000 += notes2000Count;
+            ATM.notes500 += notes500Count;
+            ATM.notes200 += notes200Count;
+            ATM.notes100 += notes100Count;
+
+            System.out.println("Successfully deposited Rs." + totalDepositAmount);
+            System.out.println("New ATM Balance: Rs." + ATM.getTotalATMBalance());
+            Transaction adminTransaction = new Transaction(admin.getId(), "ATM Deposit", totalDepositAmount);
+            admin.addTransaction(adminTransaction);
+        } else {
+            System.out.println("Error: The denominations entered do not match the total deposit amount.");
+            System.out.println("Redirecting to login choice...");
+        }
     }
+
     private static void viewAdminTransactionHistory(Admin admin) {
         System.out.println("Admin Transaction History:");
         if (admin.getTransactionHistory().isEmpty()) {
@@ -151,3 +159,4 @@ public class AdminActions {
         System.out.println("Viewed Admin Transaction History.");
     }
 }
+
