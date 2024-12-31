@@ -132,9 +132,6 @@ public class AdminActions {
                 System.out.println("Amount: " + transaction.getAmount());
             }
         }
-        Transaction adminTransaction = new Transaction(admin.getId(), "View Admin Transaction History", 0);
-        admin.addTransaction(adminTransaction);
-
         System.out.println("Viewed Admin Transaction History.");
     }
 }
