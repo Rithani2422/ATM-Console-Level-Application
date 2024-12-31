@@ -1,33 +1,6 @@
 import java.util.Scanner;
 
 public class AdminActions {
-    public static boolean adminLogin(Scanner scanner, Admin admin) {
-        System.out.print("Enter Admin ID: ");
-        String enteredId = scanner.nextLine();
-
-        if (enteredId.equals(admin.getId())) {
-            return attemptsOfAdmin(scanner, admin);
-        } else {
-            System.out.println("Incorrect Admin ID. Returning to main menu.");
-            return false;
-        }
-    }
-
-    private static boolean attemptsOfAdmin(Scanner scanner, Admin admin) {
-        int attempts = 3;
-        while (attempts > 0) {
-            System.out.print("Enter Password (Attempts left: " + attempts + "): ");
-            String enteredPassword = scanner.nextLine();
-            if (admin.getPassword().equals(enteredPassword)) {
-                System.out.println("Admin Login Successful.");
-                return true;
-            }
-            attempts--;
-        }
-        System.out.println("Too many failed attempts. Returning to main menu.");
-        return false;
-    }
-
     public static void adminActions(Scanner scanner, Admin admin) {
         while (true) {
             System.out.println("\nAdmin Menu:");
@@ -41,27 +14,25 @@ public class AdminActions {
             int choice = Integer.parseInt(scanner.nextLine());
 
             if (choice == 1) {
-                addUserAccount(scanner,admin);
+                addUserAccount(scanner, admin);
             } else if (choice == 2) {
                 deleteUserAccount(scanner);
             } else if (choice == 3) {
                 viewTransactionHistory();
             } else if (choice == 4) {
-                depositToATM(scanner,admin);
-            }
-            else if (choice == 5) {
+                depositToATM(scanner, admin);
+            } else if (choice == 5) {
                 viewAdminTransactionHistory(admin);
-            }
-            else if (choice == 6) {
+            } else if (choice == 6) {
                 System.out.println("Logging out");
                 break;
             } else {
                 System.out.println("Invalid choice. Please try again.");
             }
         }
-        }
+    }
 
-    private static void addUserAccount(Scanner scanner,Admin admin) {
+    private static void addUserAccount(Scanner scanner, Admin admin) {
         System.out.print("Enter Username: ");
         String username = scanner.nextLine();
         User userToAdd = ATM.findUserByUsername(username);
@@ -70,15 +41,14 @@ public class AdminActions {
             String password = scanner.nextLine();
             System.out.print("Enter Initial Balance: ");
             double balance = Double.parseDouble(scanner.nextLine());
-            admin.addTransaction(new Transaction("admin","Initial Amount",balance));
+            admin.addTransaction(new Transaction("admin", "Initial Amount", balance));
             ATM.users.add(new User(username, password, balance));
             System.out.println("User account created successfully.");
         } else {
             System.out.println("User account already exists.");
         }
-
-
     }
+
     private static void deleteUserAccount(Scanner scanner) {
         System.out.print("Enter Username to delete: ");
         String username = scanner.nextLine();
@@ -98,10 +68,9 @@ public class AdminActions {
                 System.out.println("No transactions found for this user.");
             } else {
                 for (Transaction transaction : user.getTransactionHistory()) {
-                    System.out.println("Performed By:" + transaction.getPerformedBy());
-                    System.out.println("Type:" + transaction.getType());
-                    System.out.println("Amount:" + transaction.getAmount());
-
+                    System.out.println("Performed By: " + transaction.getPerformedBy());
+                    System.out.println("Type: " + transaction.getType());
+                    System.out.println("Amount: " + transaction.getAmount());
                 }
             }
             System.out.println();
@@ -127,10 +96,10 @@ public class AdminActions {
                 (notes200Count * 200) + (notes100Count * 100);
 
         if (calculatedTotal == totalDepositAmount) {
-            ATM.notes2000 += notes2000Count;
-            ATM.notes500 += notes500Count;
-            ATM.notes200 += notes200Count;
-            ATM.notes100 += notes100Count;
+            updateATMNotes(2000, notes2000Count);
+            updateATMNotes(500, notes500Count);
+            updateATMNotes(200, notes200Count);
+            updateATMNotes(100, notes100Count);
 
             System.out.println("Successfully deposited Rs." + totalDepositAmount);
             System.out.println("New ATM Balance: Rs." + ATM.getTotalATMBalance());
@@ -138,8 +107,18 @@ public class AdminActions {
             admin.addTransaction(adminTransaction);
         } else {
             System.out.println("Error: The denominations entered do not match the total deposit amount.");
-            System.out.println("Redirecting to login choice...");
         }
+    }
+
+    private static void updateATMNotes(int denomination, int count) {
+        for (Notes note : ATM.notes) {
+            if (note.getNote() == denomination) {
+                note.setCount(note.getCount() + count);
+                return;
+            }
+        }
+
+        ATM.notes.add(new Notes(denomination, count));
     }
 
     private static void viewAdminTransactionHistory(Admin admin) {
@@ -159,4 +138,6 @@ public class AdminActions {
         System.out.println("Viewed Admin Transaction History.");
     }
 }
+
+
 
