@@ -48,28 +48,38 @@ public class ATM {
 
         }
     public static Admin adminLogin(Scanner scanner, ArrayList<Admin> admins) {
+        System.out.print("Enter Admin Username: ");
+        String username = scanner.nextLine();
+        Admin matchedAdmin = null;
+        for (Admin admin : admins) {
+            if (admin.getId().equals(username)) {
+                matchedAdmin = admin;
+                break;
+            }
+        }
+        if (matchedAdmin == null) {
+            System.out.println("Invalid username. Returning to login choice.");
+            return null;
+        }
         int attempts = 3;
         while (attempts > 0) {
-            System.out.print("Enter Admin Username: ");
-            String username = scanner.nextLine();
             System.out.print("Enter Admin Password: ");
             String password = scanner.nextLine();
 
-            for (Admin admin : admins) {
-                if (admin.getId().equals(username) && admin.getPassword().equals(password)) {
-                    System.out.println("Admin login successful!");
-                    return admin;
-                }
+            if (matchedAdmin.getPassword().equals(password)) {
+                System.out.println("Admin login successful!");
+                return matchedAdmin;
             }
             attempts--;
             if (attempts > 0) {
-                System.out.println("Invalid username or password. Attempts remaining: " + attempts);
+                System.out.println("Incorrect password. Attempts remaining: " + attempts);
             } else {
-                System.out.println("Too many failed attempts. Returning to the main menu.");
+                System.out.println("Too many failed attempts. Returning to login choice.");
             }
         }
         return null;
     }
+
     static User findUserByUsername(String username) {
         for (User user : users) {
             if (user.getUsername().equals(username)) {
@@ -80,10 +90,10 @@ public class ATM {
     }
 
     private static void initializeNotes() {
-        notes.add(new Notes(2000, 10));
-        notes.add(new Notes(500, 20));
-        notes.add(new Notes(200, 30));
-        notes.add(new Notes(100, 50));
+        notes.add(new Notes(2000, 0));
+        notes.add(new Notes(500, 0));
+        notes.add(new Notes(200, 0));
+        notes.add(new Notes(100, 0));
     }
 
     public static int getTotalATMBalance() {
