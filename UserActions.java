@@ -1,4 +1,3 @@
-
 import java.util.Scanner;
 // Imports the Scanner class to read user input
 
@@ -166,47 +165,44 @@ public class UserActions {
     }
 
     private static void withdrawAmount(Scanner scanner, User currentUser) {
-        // Method to withdraw money from the user's account
-
+        // the user to enter the amount they want to withdraw
         System.out.print("Enter the amount to withdraw: ");
-        // the user to enter the withdrawal amount
+        int amount = Integer.parseInt(scanner.nextLine());  // Read and parse the withdrawal amount
 
-        int amount = Integer.parseInt(scanner.nextLine());
-        // Reads and parses the withdrawal amount
+        // Validate if the withdrawal amount is a multiple of 100
+        if (amount % 100 != 0) {
+            System.out.println("Withdrawal amount must be a multiple of 100.");  // Inform the user about the invalid amount
+            return;  // Exit the method as the withdrawal request is invalid
+        }
 
+        // Check if the user's account has sufficient balance for the withdrawal
         if (amount > currentUser.getBalance()) {
-            // Checks if the user's balance is sufficient for the withdrawal
-
-            System.out.println("Insufficient user balance.");
-            // Displays an error message if the balance is insufficient
-
-            return;
+            System.out.println("Insufficient balance in your account.");  // Inform the user about insufficient balance
+            return;  // Exit the method as the withdrawal cannot proceed
         }
 
-        if (!ATM.withdrawFromATM(amount)) {
-            // Attempts to withdraw the requested amount from the ATM
+        // Attempt to withdraw the amount from the ATM
+        boolean successfulWithdrawal = ATM.withdrawFromATM(amount);  // Call the ATM method to process the withdrawal
 
-            System.out.println("ATM cannot provide the requested amount due to insufficient denominations.");
-            // Displays an error message if the ATM cannot dispense the amount
-        } else {
-            double newBalance = currentUser.getBalance() - amount;
-            // Calculates the new balance after withdrawal
-
-            currentUser.setBalance(newBalance);
-            // Updates the user's balance
-
-            Transaction transaction = new Transaction(currentUser.getUsername(), "Withdraw", amount);
-            // Creates a new transaction record for the withdrawal
-
-            currentUser.addTransaction(transaction);
-            // Adds the transaction to the user's transaction history
-
-            System.out.println("Withdrawal successful.");
-            // Displays a success message for the withdrawal
-
-            System.out.println("New balance: Rs." + newBalance);
-            // Displays the updated balance
+        // Check if the ATM was unable to dispense the requested amount
+        if (!successfulWithdrawal) {
+            System.out.println("ATM cannot provide the requested amount due to insufficient denominations or funds.");
+            // Inform the user about ATM issues
+            return;  // Exit the method as the ATM couldn't dispense the amount
         }
+
+        // Deduct the withdrawn amount from the user's account balance
+        currentUser.setBalance(currentUser.getBalance() - amount);
+
+        // Create a new transaction record for this withdrawal
+        Transaction transaction = new Transaction(currentUser.getUsername(), "Withdraw", amount);
+
+        // Add the transaction to the user's transaction history
+        currentUser.addTransaction(transaction);
+
+        // Inform the user that the withdrawal was successful
+        System.out.println("Withdrawal successful.");
+        System.out.println("New balance: Rs." + currentUser.getBalance());  // Display the updated balance
     }
 
     private static void viewTransactionHistory(User currentUser) {
@@ -268,3 +264,4 @@ public class UserActions {
         }
     }
 }
+
